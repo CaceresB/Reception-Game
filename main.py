@@ -1,4 +1,5 @@
 from Box import Box
 
 world = Box()
-world.roundG()
+for i in range(25):
+  world.roundG()

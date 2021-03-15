@@ -7,6 +7,7 @@ class Box:
   lineSize = 10
   bLen = 10+3
   box=Queue()
+  money = int(50)
 
   def __init__(self):
     self.createBox()
@@ -18,18 +19,22 @@ class Box:
 
   def printBox(self):
     #make a print thing
+    print('Budget: '+"{}".format(self.money))
     print('+'+('-'*self.numR*3)+'+')
     print('|'+' R '*self.numR+'|')
     self.box.display()
     print('+'+('-'*self.numR*3)+'+')
     
   def roundG(self):
-    addRec = random.randint(0, 1)
-    if addRec == 0:
+    addRec = random.randint(0, 4)
+    if addRec != 0:
       self.box.enqueue('|'+(' '*self.numR*3) +'|')
       self.box.dequeue()
+      self.money+=1
     else:
       bInd = int((self.numR+3)/2)-1
       self.box.enqueue('|'+(' '*bInd)+ 'V' +(' '*bInd)+'|')
       self.box.dequeue()
+      self.money+=10
+    
     self.printBox()
