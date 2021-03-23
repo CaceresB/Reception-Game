@@ -1,8 +1,10 @@
-class Receptionist:
-  turns=1
-  def __init__(self):
-    self.speed =0
+class Visitor:
+  def __init__(self, turns):
+    self.turns =turns
 
   def turn(self):
     self.turns-=1
+
+  def getTurn(self):
+    return self.turns
 
