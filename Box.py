@@ -34,6 +34,7 @@ class Box:
   def printBox(self):
     #make a print thing
     print("\033[H",end="")
+    print("Press R to buy a receptionist (200)\nPress L to buy a life(50)") 
     print((self.IMG_life+" ")*self.lives+"_"*(10-self.lives))
     print('Seen: '+"{}".format(self.visitors))
     print('Budget: '+"{:03}".format(self.money), "")
