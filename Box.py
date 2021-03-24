@@ -12,13 +12,13 @@ class Box:
   bLen = 10+3
   bWid=int(9)
   box=Queue()
-  money = int(100)
+  money = int(0)
   IMG_life = "❤︎"
   rSymbols = ["👩‍💼", "👨‍💼"]
   lives = 3
   running = True
   level, visitors, seen=0, 0, 0
-  speed = [0.15, 0.10, 0.08, 0.05]
+  speed = range(10, 5, -1)
   vStay = [1]
   cap=200
   receptionists=[Receptionist()]
@@ -50,7 +50,7 @@ class Box:
     print('+'+('-'*(self.bWid-2))+'+')
     
   def roundG(self):
-    addVis = random.randint(0, int(6-(self.seen/40)))
+    addVis = random.randint(0, int(3-(self.seen/60)))
     if addVis != 0 or self.visitors==self.cap:
       self.box.enqueue(' '*int(self.bWid/2-1) +'| |')
     else:
@@ -62,7 +62,7 @@ class Box:
     for i in range(self.numR):
         if self.receptionists[i].isBusy():
           if random.randint(0, 8-int((self.seen+10)/30))!=0:
-            self.money+=random.randint(1, int(10-(self.seen/40)))
+            self.money+=random.randint(1, int(10-(self.seen/23)))
             self.receptionists[i].done()
             if s==-1: s=i
         else:
@@ -78,7 +78,7 @@ class Box:
   def run(self):
     while self.running:
       self.roundG()
-      sleep(self.speed[int((self.seen-10)/50)]) #sleep(speed[level])
+      sleep(self.speed[int((self.seen-9)/40)]/100) #sleep(speed[level])
       if self.seen == self.cap: #10
         self.running=False
         
