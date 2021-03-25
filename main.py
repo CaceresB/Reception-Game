@@ -7,6 +7,8 @@ hide()
 world = Box()
 
 kthread = KeyboardThread(world.keypress)
+
+
 world.run()
 
 show()

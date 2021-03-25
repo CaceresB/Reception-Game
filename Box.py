@@ -1,27 +1,27 @@
-import random
+from random import randint
 from Queue import Queue
 from time import sleep
 from getkey import getkey
 from threading import Thread
-from Receptionist import Receptionist
+from Employee import Employee
 
 class Box:
-  rPlaces = 3
-  numR = 1
+  numE = 1
   lineSize = 10
-  bLen = 10+3
+  bLen = 13
   bWid=int(9)
   box=Queue()
-  money = int(0)
+  money = int(30)
   IMG_life = "❤︎"
-  rSymbols = ["👩‍💼", "👨‍💼"]
-  lives = 3
+  eSymbols = ["👩‍", "👨"]
+  lives = 5
   running = True
-  level, visitors, seen=0, 0, 0
+  level, customers, seen=0, 0, 0
   speed = range(10, 5, -1)
-  vStay = [1]
   cap=200
-  receptionists=[Receptionist()]
+  Employees=[Employee(eSymbols[randint(0,1)])]
+  eCost = 175
+  lCost = 50
 
   def __init__(self):
     self.createBox()
@@ -34,70 +34,81 @@ class Box:
   def printBox(self):
     #make a print thing
     print("\033[H",end="")
-    print("Press R to buy a receptionist (200)\nPress L to buy a life(50)") 
+    print("Press E to buy an Employee $"+ "{}".format(self.eCost)) 
+    print("Press L to buy a life $"+ "{}".format(self.lCost)) 
+    print("Press B to bet a coin" ) 
     print((self.IMG_life+" ")*self.lives+"_"*(10-self.lives))
-    print('Seen: '+"{}".format(self.visitors))
+    print('Seen: '+"{}".format(self.customers))
     print('Budget: '+"{:03}".format(self.money), "")
+    
+    
     print('+'+('-'*(self.bWid-2))+'+')
-    print('|   '+('R'+'   ')*self.numR+'|')
-    desks = '|_'
-    for i in self.receptionists:
+    pCash='|  '
+    registers = '|_'
+    for i in self.Employees:
+      pCash+=(i.emoji+'   ')
       if i.isBusy():
-        desks+='_|V|'
-      else: desks+='_|_|'
-    desks+='__|'
-    print(desks)
+        registers+='_|C|'
+        
+      else: registers+='_|_|'
+    registers+='__|'
+    pCash+=' |'
+    print(pCash)
+    print(registers)
     self.box.display()
-    print('+'+('-'*(self.bWid-2))+'+')
     
   def roundG(self):
-    addVis = random.randint(0, int(3-(self.seen/60)))
-    if addVis != 0 or self.visitors==self.cap:
+    addCust = randint(0, int(3-(self.seen/60)))
+    if addCust != 0 or self.customers==self.cap:
       self.box.enqueue(' '*int(self.bWid/2-1) +'| |')
     else:
-      #bInd = int((self.numR+3*self.numR)/2)-1
-      self.box.enqueue((' '*(int(self.bWid/2-1)))+ '|'+'V' +'|')
-      self.visitors+=1
+      #bInd = int((self.C+3*self.C)/2)-1
+      self.box.enqueue((' '*(int(self.bWid/2-1)))+ '|'+'C' +'|')
+      self.customers+=1
 
     s=-1 #visitor seen
-    for i in range(self.numR):
-        if self.receptionists[i].isBusy():
-          if random.randint(0, 8-int((self.seen+10)/30))!=0:
-            self.money+=random.randint(1, int(10-(self.seen/23)))
-            self.receptionists[i].done()
+    for i in range(self.numE):
+        if self.Employees[i].isBusy():
+          if self.Employees[i].round():
+            self.money+=randint(1, int(10-(self.seen/23)))
             if s==-1: s=i
         else:
           if s==-1: s=i
-    if self.box.dequeue().find('V')>-1:
+    if self.box.dequeue().find('C')>-1:
       self.seen+=1
       if s==-1:
         self.lives-=1
       else:
-        self.receptionists[s].help()    
+        self.Employees[s].help(self.seen)    
     self.printBox()
 
   def run(self):
     while self.running:
       self.roundG()
       sleep(self.speed[int((self.seen-9)/40)]/100) #sleep(speed[level])
-      if self.seen == self.cap: #10
+      if self.seen == self.cap or self.lives==0: #10
         self.running=False
         
   def keypress(self,key):
-    if key == key == "r": self.addRec()
+    if key == key == "e": self.addEmp()
     if key == key == "l": self.addLife()
+    if key == key == "b": self.bet()
 
-  def addRec(self):
-    if self.money>=200:
-      self.numR+=1
-      self.money-=200
+  def addEmp(self):
+    if self.money>=self.eCost:
+      self.numE+=1
+      self.money-=self.eCost
       self.bWid+=4
-      self.receptionists+=[Receptionist()]
+      self.Employees+=[Employee(self.eSymbols[randint(0,1)])]
 
   def addLife(self):
     if self.money>=50:
       self.lives+=1
       self.money-=50
+
+  def bet(self):
+    if self.money>=1:
+      self.money+=randint(-9,10)-1
 
 
 class KeyboardThread(Thread):
