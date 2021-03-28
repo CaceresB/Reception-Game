@@ -11,7 +11,7 @@ class Box:
   bLen = 13
   bWid=int(9)
   box=Queue()
-  money = int(100)
+  money = int(30)
   IMG_life = "❤︎"
   eSymbols = ["👩‍", "👨"]
   lives = 5
