@@ -11,7 +11,7 @@ class Box:
   bLen = 13
   bWid=int(9)
   box=Queue()
-  money = int(30)
+  money = int(100)
   IMG_life = "❤︎"
   eSymbols = ["👩‍", "👨"]
   lives = 5
@@ -22,6 +22,7 @@ class Box:
   Employees=[Employee(eSymbols[randint(0,1)])]
   eCost = 175
   lCost = 50
+  cCost = 100
 
   def __init__(self):
     self.createBox()
@@ -36,6 +37,7 @@ class Box:
     print("\033[H",end="")
     print("Press E to buy an Employee $"+ "{}".format(self.eCost)) 
     print("Press L to buy a life $"+ "{}".format(self.lCost)) 
+    print("Press C to clear the board $"+ "{}".format(self.cCost)) 
     print("Press B to bet a coin" ) 
     print((self.IMG_life+" ")*self.lives+"_"*(10-self.lives))
     print('Seen: '+"{}".format(self.customers))
@@ -93,6 +95,7 @@ class Box:
     if key == key == "e": self.addEmp()
     if key == key == "l": self.addLife()
     if key == key == "b": self.bet()
+    if key == key == "c": self.cBoard()
 
   def addEmp(self):
     if self.money>=self.eCost:
@@ -105,6 +108,12 @@ class Box:
     if self.money>=50:
       self.lives+=1
       self.money-=50
+
+  def cBoard(self):
+    if self.money>=self.cCost:
+      self.money-=self.cCost
+      self.box=Queue()
+      self.createBox()
 
   def bet(self):
     if self.money>=1:
